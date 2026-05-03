@@ -12,8 +12,8 @@ export const CONTENT = {
   },
   hero: {
     label: "CO-SYNCHRO",
-    heading: "Chemistry in one second.",
-    subheading: "Just hold two smartphones together.\nAI orchestrates the connection between you.",
+    heading: "You don't need a language to begin.",
+    subheading: "Hold phones together for one second.\nThe distance between two people changes.",
     cta_primary: "Learn More",
     cta_secondary: "Request Information",
   },
@@ -24,12 +24,12 @@ export const CONTENT = {
       {
         icon: "language",
         title: "The Language Barrier",
-        body: "Seven languages, one workplace. Even a greeting does not always land.",
+        body: "Seven languages, one workplace. Even a greeting doesn't land.",
       },
       {
         icon: "person",
         title: "Isolation & Turnover",
-        body: "~60% of foreign staff leave within 3 years. The number one reason: workplace isolation.",
+        body: "~60% of foreign staff leave within 3 years. The #1 reason: workplace isolation.",
       },
       {
         icon: "yen",
@@ -41,7 +41,7 @@ export const CONTENT = {
   solution: {
     label: "SOLUTION",
     heading: "Resonate before words.",
-    body: "CO-SYNCHRO is not a translation tool. It is contact design.\nHold two smartphones together for one second, and AI makes the chemistry between two people visible.",
+    body: "CO-SYNCHRO is not a translation tool - it is contact design.\nHold two smartphones together for one second,\nand AI makes the chemistry between two people visible.",
   },
   howItWorks: {
     label: "HOW IT WORKS",
@@ -50,12 +50,12 @@ export const CONTENT = {
       {
         number: "01",
         title: "Scan",
-        body: "Hold your phone close for one second. No setup. Just open the app.",
+        body: "Hold your phone close - one second. No setup. Just open the app.",
       },
       {
         number: "02",
         title: "Chemistry",
-        body: "AI generates 3 personality cards for your partner. Compatibility appears in real time.",
+        body: "AI generates 3 personality cards for your partner. Compatibility score appears in real time.",
       },
       {
         number: "03",
@@ -71,34 +71,34 @@ export const CONTENT = {
       {
         icon: "plane",
         title: "Airports & Ports",
-        body: "Building multinational teams across 100,000 Narita Airport staff.",
+        body: "Building multinational teams across 100,000 Narita Airport staff",
       },
       {
         icon: "building",
         title: "Large-scale Manufacturing",
-        body: "Onboarding multilingual production-line workers without slowing the operation.",
+        body: "Onboarding multilingual production-line workers",
       },
       {
         icon: "handshake",
         title: "Corporate Training",
-        body: "Embedding chemistry and cross-cultural connection into team-building programs.",
+        body: "Embedding into cross-cultural team-building programmes",
       },
     ],
   },
-  metrics: {
+  data: {
     label: "DATA",
     heading: "The numbers say it.",
     items: [
-      { value: 100000, display: "100,000", suffix: "", label: "Staff at Narita Airport after expansion" },
-      { value: 60, display: "60", suffix: "%", label: "Foreign staff turnover within 3 years" },
-      { value: 1, display: "1", suffix: " sec", label: "Time required to scan" },
-      { value: 7, display: "7", suffix: " lang", label: "UI languages supported by CO-SYNCHRO" },
+      { value: 100000, suffix: "", label: "staff at Narita Airport after expansion" },
+      { value: 60, suffix: "%", label: "foreign staff turnover within 3 years" },
+      { value: 1, suffix: " sec", label: "time required to scan" },
+      { value: 7, suffix: " lang", label: "UI languages supported" },
     ],
   },
   cta: {
     label: "CONTACT",
     heading: "Ready to try it on the frontline at Narita?",
-    body: "Start with a small-scale PoC at Global Eye. A trial plan designed to bring adoption cost and risk as close to zero as possible.",
+    body: "Starting with a small-scale PoC at Global Eye.\nA trial plan designed to bring adoption cost and risk as close to zero as possible.",
     cta: "Enquire / Request Information",
   },
   footer: {

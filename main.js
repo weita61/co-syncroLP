@@ -20,7 +20,8 @@ function setText(selector, value) {
 }
 
 function renderContent() {
-  const { nav, hero, problem, solution, howItWorks, useCases, metrics, cta, footer } = CONTENT;
+  const { nav, hero, problem, solution, howItWorks, useCases, cta, footer } = CONTENT;
+  const data = CONTENT.data;
 
   setText(".brand span", nav.logo);
   qs(".site-nav").innerHTML = nav.links.map((item) => `<a href="${item.href}">${item.label}</a>`).join("");
@@ -67,14 +68,17 @@ function renderContent() {
     </article>
   `).join("");
 
-  setText("#data .section-kicker", metrics.label);
-  setText("#data-title", metrics.heading);
-  qs(".metrics-grid").innerHTML = metrics.items.map((item, index) => `
-    <article class="metric-item ${item.display.length > 4 ? "metric-wide" : ""} reveal" data-value="${item.value}" data-display="${item.display}" data-suffix="${item.suffix}" style="transition-delay: ${index * 80}ms">
+  setText("#data .section-kicker", data.label);
+  setText("#data-title", data.heading);
+  qs(".metrics-grid").innerHTML = data.items.map((item, index) => {
+    const display = item.display || Number(item.value).toLocaleString("en-US");
+    return `
+    <article class="metric-item ${display.length > 4 ? "metric-wide" : ""} reveal" data-value="${item.value}" data-display="${display}" data-suffix="${item.suffix}" style="transition-delay: ${index * 80}ms">
       <span class="metric-value">0<span class="metric-suffix">${item.suffix}</span></span>
       <p class="metric-label">${item.label}</p>
     </article>
-  `).join("");
+  `;
+  }).join("");
 
   setText("#cta .section-kicker", cta.label);
   setText("#cta-title", cta.heading);
