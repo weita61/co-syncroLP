@@ -211,6 +211,7 @@ function setupThree() {
 
   try {
     initScene(canvas);
+    document.body.classList.add("webgl-active");
   } catch (error) {
     destroyScene();
     canvas.style.display = "none";

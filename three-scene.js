@@ -221,7 +221,9 @@ function animate(now) {
   phones.phoneA.rotation.set(0.05, THREE.MathUtils.lerp(-0.28, 0.5, eased) + Math.sin(t * 0.4) * 0.06, -0.12);
   phones.phoneB.rotation.set(-0.05, THREE.MathUtils.lerp(0.28, -0.5, eased) - Math.sin(t * 0.4) * 0.06, 0.12);
 
+  const width = renderer.domElement.clientWidth || window.innerWidth;
   phones.group.rotation.y = Math.sin(t * 0.2) * 0.08;
+  phones.group.position.x = width > 980 ? 1.25 : 0.38;
   phones.group.position.y = Math.sin(t * 0.62) * 0.05;
 
   const screenIntensity = THREE.MathUtils.lerp(0.44, 1.35, contact);
