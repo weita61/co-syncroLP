@@ -8,7 +8,8 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800;900&family=JetBrains+Mono:wght@500;700&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
 
   <script type="importmap">
     {
@@ -17,334 +18,119 @@
       }
     }
   </script>
-
   <script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/gsap.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/ScrollTrigger.min.js"></script>
-
-  <style>
-    :root {
-      --canvas: #0A0F1E;
-      --text: #ffffff;
-      --muted: rgba(255,255,255,.65);
-      --accent: #0057FF;
-      --accent2: #00D4B5;
-      --border: rgba(255,255,255,.12);
-      --glass: rgba(255,255,255,.06);
-      --radius: 20px;
-      --max: 1180px;
-      --shadow: 0 8px 32px rgba(0,0,0,.35);
-    }
-
-    * { box-sizing: border-box; }
-    html { scroll-behavior: smooth; }
-    body {
-      margin: 0;
-      background: var(--canvas);
-      color: var(--text);
-      font-family: Inter, sans-serif;
-      line-height: 1.6;
-    }
-
-    a { color: inherit; text-decoration: none; }
-
-    header {
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      backdrop-filter: blur(12px);
-      background: rgba(10,15,30,.72);
-      border-bottom: 1px solid rgba(255,255,255,.06);
-    }
-
-    .nav {
-      max-width: var(--max);
-      margin: 0 auto;
-      padding: 18px 24px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .nav-links {
-      display: flex;
-      gap: 24px;
-      align-items: center;
-      font-size: 14px;
-    }
-
-    section {
-      padding: 120px 24px;
-    }
-
-    .container {
-      max-width: var(--max);
-      margin: 0 auto;
-    }
-
-    .label {
-      font-size: 12px;
-      letter-spacing: .22em;
-      color: var(--accent2);
-      text-transform: uppercase;
-      margin-bottom: 12px;
-      font-weight: 700;
-    }
-
-    h1, h2 {
-      margin: 0 0 16px;
-      line-height: 1.05;
-    }
-
-    h1 { font-size: clamp(48px, 8vw, 96px); }
-    h2 { font-size: clamp(36px, 5vw, 64px); }
-
-    p { color: var(--muted); }
-
-    .hero {
-      min-height: 92vh;
-      display: grid;
-      grid-template-columns: 1.1fr 1fr;
-      gap: 48px;
-      align-items: center;
-    }
-
-    .buttons {
-      display: flex;
-      gap: 16px;
-      margin-top: 28px;
-      flex-wrap: wrap;
-    }
-
-    .btn {
-      padding: 14px 24px;
-      border-radius: 999px;
-      border: 1px solid rgba(255,255,255,.14);
-      background: var(--glass);
-      backdrop-filter: blur(20px);
-      transition: .25s ease;
-      font-weight: 600;
-    }
-
-    .btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 0 30px rgba(0,87,255,.35);
-    }
-
-    .glass {
-      background: var(--glass);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      backdrop-filter: blur(20px);
-      box-shadow: var(--shadow);
-    }
-
-    .cards {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 24px;
-      margin-top: 40px;
-    }
-
-    .card {
-      padding: 28px;
-      min-height: 240px;
-      transition: .3s ease;
-    }
-
-    .card:hover {
-      transform: translateY(-8px);
-      box-shadow: 0 0 40px rgba(0,87,255,.18);
-    }
-
-    .metrics {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 24px;
-      margin-top: 40px;
-    }
-
-    .metric {
-      padding: 28px;
-      text-align: center;
-    }
-
-    .metric-number {
-      font-size: clamp(52px, 8vw, 96px);
-      font-weight: 900;
-      text-shadow: 0 0 40px rgba(0,87,255,.45);
-    }
-
-    #hero-canvas {
-      width: 100%;
-      height: 560px;
-      border-radius: 28px;
-      overflow: hidden;
-    }
-
-    footer {
-      padding: 40px 24px 80px;
-      color: rgba(255,255,255,.5);
-      text-align: center;
-      font-size: 14px;
-    }
-
-    @media (max-width: 768px) {
-      .hero,
-      .cards,
-      .metrics {
-        grid-template-columns: 1fr;
-      }
-
-      .nav-links {
-        display: none;
-      }
-
-      #hero-canvas {
-        height: 360px;
-      }
-    }
-  </style>
+  <script type="module" src="main.js"></script>
 </head>
 <body>
-  <header>
-    <div class="nav">
-      <strong>CO-SYNCHRO</strong>
-      <div class="nav-links">
-        <a href="#problem">Problem</a>
-        <a href="#solution">Solution</a>
-        <a href="#data">Data</a>
-        <a class="btn" href="#contact">Request Info</a>
-      </div>
+  <header id="site-header" class="site-header">
+    <div class="header-inner">
+      <a class="brand" href="#hero" aria-label="CO-SYNCHRO home">
+        <svg class="brand-mark" viewBox="0 0 36 36" aria-hidden="true">
+          <circle cx="12" cy="18" r="5" />
+          <circle cx="24" cy="18" r="5" />
+          <path d="M16.8 18h2.4" />
+        </svg>
+        <span></span>
+      </a>
+      <nav class="site-nav" aria-label="Primary navigation"></nav>
+      <a class="btn btn-glass header-cta" href="#cta"></a>
     </div>
   </header>
 
   <main>
-    <section id="hero">
-      <div class="container hero">
-        <div>
-          <div class="label">CO-SYNCHRO</div>
-          <h1>Chemistry in one second.</h1>
-          <p>Just hold two smartphones together — AI orchestrates the connection between you.</p>
-          <div class="buttons">
-            <a class="btn" href="#solution">Learn More</a>
-            <a class="btn" href="#contact">Request Information</a>
+    <section id="hero" class="hero-section" aria-labelledby="hero-title">
+      <canvas id="hero-canvas" aria-hidden="true"></canvas>
+      <div class="mobile-phone-fallback" aria-hidden="true">
+        <div class="fallback-phone fallback-phone-a"></div>
+        <div class="fallback-phone fallback-phone-b"></div>
+        <span></span><span></span><span></span>
+      </div>
+      <div class="container hero-grid">
+        <div class="hero-copy">
+          <p class="hero-eyebrow"></p>
+          <h1 id="hero-title"></h1>
+          <p class="hero-sub"></p>
+          <div class="button-row">
+            <a class="btn btn-primary hero-cta-primary" href="#solution"></a>
+            <a class="btn btn-glass hero-cta-secondary" href="#cta"></a>
           </div>
         </div>
-        <div id="hero-canvas" class="glass"></div>
+        <div class="hero-visual" aria-hidden="true">
+          <div class="hero-orbit"></div>
+          <div class="hero-phone-outline phone-left"></div>
+          <div class="hero-phone-outline phone-right"></div>
+        </div>
+      </div>
+      <div class="scroll-cue" aria-hidden="true"><span></span></div>
+    </section>
+
+    <section id="problem" class="page-section" aria-labelledby="problem-title">
+      <div class="container">
+        <div class="section-kicker"></div>
+        <h2 id="problem-title"></h2>
+        <div class="cards-grid problem-cards"></div>
       </div>
     </section>
 
-    <section id="problem">
-      <div class="container">
-        <div class="label">Problem</div>
-        <h2>What is happening at Narita Airport right now.</h2>
-        <div class="cards">
-          <div class="card glass"><h3>The Language Barrier</h3><p>Seven languages, one workplace. Even a greeting doesn't land.</p></div>
-          <div class="card glass"><h3>Isolation & Turnover</h3><p>Workplace isolation drives turnover and weakens trust.</p></div>
-          <div class="card glass"><h3>Communication Cost</h3><p>Translation and interpreter operations create constant overhead.</p></div>
+    <section id="solution" class="page-section solution-section" aria-labelledby="solution-title">
+      <div class="container solution-grid">
+        <div class="solution-copy">
+          <div class="section-kicker"></div>
+          <h2 id="solution-title"></h2>
+          <p class="solution-body"></p>
+        </div>
+        <div class="scan-demo glass-panel" aria-hidden="true">
+          <div class="scan-phone phone-a"><span></span></div>
+          <div class="scan-contact">
+            <i></i><i></i><i></i>
+          </div>
+          <div class="scan-phone phone-b"><span></span></div>
         </div>
       </div>
     </section>
 
-    <section id="solution">
+    <section id="how-it-works" class="page-section how-section" aria-labelledby="how-title">
       <div class="container">
-        <div class="label">Solution</div>
-        <h2>Resonate before words.</h2>
-        <p>CO-SYNCHRO is not a translation tool — it is contact design. AI makes chemistry visible before conversation begins.</p>
-      </div>
-    </section>
-
-    <section id="data">
-      <div class="container">
-        <div class="label">Data</div>
-        <h2>The numbers say it.</h2>
-        <div class="metrics">
-          <div class="metric glass"><div class="metric-number">100,000</div><p>Airport workforce scale</p></div>
-          <div class="metric glass"><div class="metric-number">60%</div><p>Turnover concern</p></div>
-          <div class="metric glass"><div class="metric-number">1 sec</div><p>Scan time</p></div>
-          <div class="metric glass"><div class="metric-number">7 lang</div><p>Supported UI languages</p></div>
+        <div class="section-kicker"></div>
+        <h2 id="how-title"></h2>
+        <div class="steps-wrap">
+          <div class="steps-progress" aria-hidden="true"><span></span></div>
+          <div class="steps-grid"></div>
         </div>
       </div>
     </section>
 
-    <section id="contact">
-      <div class="container glass" style="padding:48px; text-align:center;">
-        <div class="label">Contact</div>
-        <h2>Ready to try it on the frontline?</h2>
-        <p>Start with a small-scale pilot and validate adoption with minimal operational risk.</p>
-        <a class="btn" href="#">Book a 15-min Pilot Discussion</a>
+    <section id="use-cases" class="page-section" aria-labelledby="use-title">
+      <div class="container">
+        <div class="section-kicker"></div>
+        <h2 id="use-title"></h2>
+        <div class="cards-grid use-cases-grid"></div>
+      </div>
+    </section>
+
+    <section id="data" class="page-section data-section" aria-labelledby="data-title">
+      <div class="container">
+        <div class="section-kicker"></div>
+        <h2 id="data-title"></h2>
+        <div class="metrics-grid"></div>
+      </div>
+    </section>
+
+    <section id="cta" class="page-section cta-section" aria-labelledby="cta-title">
+      <div class="container">
+        <div class="cta-panel">
+          <div class="section-kicker"></div>
+          <h2 id="cta-title"></h2>
+          <p class="cta-body"></p>
+          <a class="btn btn-cta btn-cta-large" href="mailto:info@example.com"></a>
+        </div>
       </div>
     </section>
   </main>
 
   <footer>
-    © 2026 CO-SYNCHRO / NPO Global Eye — Operated by Eita Watanabe
+    <p class="footer-copy"></p>
   </footer>
-
-  <script type="module">
-    import * as THREE from 'three';
-
-    gsap.registerPlugin(ScrollTrigger);
-
-    if (window.innerWidth > 768) {
-      const mount = document.getElementById('hero-canvas');
-      const scene = new THREE.Scene();
-      const camera = new THREE.PerspectiveCamera(45, mount.clientWidth / mount.clientHeight, 0.1, 100);
-      camera.position.z = 6;
-
-      const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-      renderer.setSize(mount.clientWidth, mount.clientHeight);
-      mount.appendChild(renderer.domElement);
-
-      const material = new THREE.MeshPhysicalMaterial({
-        color: 0x1a1f2e,
-        roughness: 0.15,
-        metalness: 0.8,
-        transmission: 0.05
-      });
-
-      const geo = new THREE.BoxGeometry(1, 2, 0.12);
-      const phoneA = new THREE.Mesh(geo, material);
-      const phoneB = new THREE.Mesh(geo, material);
-      phoneA.position.x = -1.4;
-      phoneB.position.x = 1.4;
-      scene.add(phoneA, phoneB);
-
-      const light = new THREE.PointLight(0x0057FF, 3, 10);
-      light.position.set(2, 2, 3);
-      scene.add(light);
-      scene.add(new THREE.AmbientLight(0xffffff, 0.4));
-
-      gsap.to(phoneA.position, {
-        x: -0.3,
-        scrollTrigger: {
-          trigger: '#solution',
-          start: 'top 80%',
-          end: 'top 20%',
-          scrub: true
-        }
-      });
-
-      gsap.to(phoneB.position, {
-        x: 0.3,
-        scrollTrigger: {
-          trigger: '#solution',
-          start: 'top 80%',
-          end: 'top 20%',
-          scrub: true
-        }
-      });
-
-      function animate(t = 0) {
-        requestAnimationFrame(animate);
-        phoneA.rotation.y = Math.sin(t * 0.001) * 0.2;
-        phoneB.rotation.y = -Math.sin(t * 0.001) * 0.2;
-        phoneA.position.y = Math.sin(t * 0.0015) * 0.1;
-        phoneB.position.y = -Math.sin(t * 0.0015) * 0.1;
-        renderer.render(scene, camera);
-      }
-      animate();
-    }
-  </script>
 </body>
 </html>
