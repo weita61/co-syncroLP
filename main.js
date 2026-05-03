@@ -70,7 +70,7 @@ function renderContent() {
   setText("#data .section-kicker", metrics.label);
   setText("#data-title", metrics.heading);
   qs(".metrics-grid").innerHTML = metrics.items.map((item, index) => `
-    <article class="metric-item reveal" data-value="${item.value}" data-display="${item.display}" data-suffix="${item.suffix}" style="transition-delay: ${index * 80}ms">
+    <article class="metric-item ${item.display.length > 4 ? "metric-wide" : ""} reveal" data-value="${item.value}" data-display="${item.display}" data-suffix="${item.suffix}" style="transition-delay: ${index * 80}ms">
       <span class="metric-value">0<span class="metric-suffix">${item.suffix}</span></span>
       <p class="metric-label">${item.label}</p>
     </article>
