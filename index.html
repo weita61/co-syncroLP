@@ -1,352 +1,350 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>CO-SYNCHRO — 1秒で、化学反応。</title>
-  <meta name="description" content="スマートフォンを突き合わせるだけで、AIが二人の繋がりを演出する。" />
+  <title>CO-SYNCHRO</title>
+  <meta name="description" content="Chemistry in one second. AI orchestrates human connection through scanning." />
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,300&family=Noto+Sans+JP:wght@400;500;700&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
 
-  <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js"}}</script>
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js"
+      }
+    }
+  </script>
 
-  <link rel="stylesheet" href="style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/ScrollTrigger.min.js"></script>
+
+  <style>
+    :root {
+      --canvas: #0A0F1E;
+      --text: #ffffff;
+      --muted: rgba(255,255,255,.65);
+      --accent: #0057FF;
+      --accent2: #00D4B5;
+      --border: rgba(255,255,255,.12);
+      --glass: rgba(255,255,255,.06);
+      --radius: 20px;
+      --max: 1180px;
+      --shadow: 0 8px 32px rgba(0,0,0,.35);
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      background: var(--canvas);
+      color: var(--text);
+      font-family: Inter, sans-serif;
+      line-height: 1.6;
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(12px);
+      background: rgba(10,15,30,.72);
+      border-bottom: 1px solid rgba(255,255,255,.06);
+    }
+
+    .nav {
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: 18px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 24px;
+      align-items: center;
+      font-size: 14px;
+    }
+
+    section {
+      padding: 120px 24px;
+    }
+
+    .container {
+      max-width: var(--max);
+      margin: 0 auto;
+    }
+
+    .label {
+      font-size: 12px;
+      letter-spacing: .22em;
+      color: var(--accent2);
+      text-transform: uppercase;
+      margin-bottom: 12px;
+      font-weight: 700;
+    }
+
+    h1, h2 {
+      margin: 0 0 16px;
+      line-height: 1.05;
+    }
+
+    h1 { font-size: clamp(48px, 8vw, 96px); }
+    h2 { font-size: clamp(36px, 5vw, 64px); }
+
+    p { color: var(--muted); }
+
+    .hero {
+      min-height: 92vh;
+      display: grid;
+      grid-template-columns: 1.1fr 1fr;
+      gap: 48px;
+      align-items: center;
+    }
+
+    .buttons {
+      display: flex;
+      gap: 16px;
+      margin-top: 28px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      padding: 14px 24px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.14);
+      background: var(--glass);
+      backdrop-filter: blur(20px);
+      transition: .25s ease;
+      font-weight: 600;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 0 30px rgba(0,87,255,.35);
+    }
+
+    .glass {
+      background: var(--glass);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      backdrop-filter: blur(20px);
+      box-shadow: var(--shadow);
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      margin-top: 40px;
+    }
+
+    .card {
+      padding: 28px;
+      min-height: 240px;
+      transition: .3s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 0 40px rgba(0,87,255,.18);
+    }
+
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 24px;
+      margin-top: 40px;
+    }
+
+    .metric {
+      padding: 28px;
+      text-align: center;
+    }
+
+    .metric-number {
+      font-size: clamp(52px, 8vw, 96px);
+      font-weight: 900;
+      text-shadow: 0 0 40px rgba(0,87,255,.45);
+    }
+
+    #hero-canvas {
+      width: 100%;
+      height: 560px;
+      border-radius: 28px;
+      overflow: hidden;
+    }
+
+    footer {
+      padding: 40px 24px 80px;
+      color: rgba(255,255,255,.5);
+      text-align: center;
+      font-size: 14px;
+    }
+
+    @media (max-width: 768px) {
+      .hero,
+      .cards,
+      .metrics {
+        grid-template-columns: 1fr;
+      }
+
+      .nav-links {
+        display: none;
+      }
+
+      #hero-canvas {
+        height: 360px;
+      }
+    }
+  </style>
 </head>
 <body>
-
-<!-- ══ HEADER ══════════════════════════════════════════ -->
-<header id="header">
-  <div class="container">
-    <div class="header-inner">
-      <a href="#" class="logo">
-        <svg class="logo-mark" viewBox="0 0 30 30" fill="none">
-          <circle cx="10" cy="15" r="7" fill="#0057FF" opacity="0.9"/>
-          <circle cx="20" cy="15" r="7" fill="#00D4B5" opacity="0.9"/>
-          <ellipse cx="15" cy="15" rx="3.5" ry="5.5" fill="white" opacity="0.18"/>
-        </svg>
-        CO-SYNCHRO
-      </a>
-      <nav>
-        <a href="#problem">問題</a>
-        <a href="#solution">ソリューション</a>
-        <a href="#how-it-works">使い方</a>
-        <a href="#cta">お問い合わせ</a>
-      </nav>
-      <a href="#cta" class="btn btn-glass">資料請求</a>
-    </div>
-  </div>
-</header>
-
-<!-- ══ HERO ════════════════════════════════════════════ -->
-<section id="hero">
-  <canvas id="hero-canvas"></canvas>
-  <div class="hero-bg-fallback" id="hero-fallback"></div>
-
-  <div class="hero-content" id="hero-content">
-    <div class="hero-label">COMMUNICATION OS</div>
-    <h1 class="display">1秒で、<em>化学反応</em>。</h1>
-    <p class="hero-sub">スマートフォンを突き合わせるだけで、&#10;AIが二人の繋がりを演出する。</p>
-    <div class="hero-cta">
-      <a href="#how-it-works" class="btn btn-primary btn-large">詳しく見る</a>
-      <a href="#cta" class="btn btn-glass btn-large">資料請求</a>
-    </div>
-  </div>
-
-  <div class="hero-scroll">
-    <div class="hero-scroll-line"></div>
-    <span>SCROLL</span>
-  </div>
-</section>
-
-<!-- ══ PROBLEM ═════════════════════════════════════════ -->
-<section id="problem">
-  <div class="container">
-    <div class="problem-header">
-      <div>
-        <div class="label reveal">PROBLEM</div>
-        <h2 class="headline reveal" style="transition-delay:0.1s">成田空港では、<br>今何が起きているか。</h2>
-      </div>
-      <p class="subtext problem-subtext reveal" style="transition-delay:0.2s">
-        言語、文化、距離。現場には目に見えない壁がある。
-      </p>
-    </div>
-    <div class="problem-grid">
-      <div class="glass-card p-card reveal" style="transition-delay:0s">
-        <div class="p-stat">7<span class="p-unit">言語</span></div>
-        <div class="p-title">言語の壁</div>
-        <p class="p-body">同じ職場に7言語。挨拶すら届かない。</p>
-      </div>
-      <div class="glass-card p-card reveal" style="transition-delay:0.12s">
-        <div class="p-stat">60<span class="p-unit">%</span></div>
-        <div class="p-title">孤立と離職</div>
-        <p class="p-body">外国人スタッフの3年以内離職率は約60%。原因の第1位は「職場の孤立感」。</p>
-      </div>
-      <div class="glass-card p-card reveal" style="transition-delay:0.24s">
-        <div class="p-stat" style="font-size:clamp(1.8rem,3vw,3rem)">数千万<span class="p-unit">円</span></div>
-        <div class="p-title">コミュニケーションコスト</div>
-        <p class="p-body">通訳・翻訳研修の年間コストは空港1施設で数千万円規模。</p>
+  <header>
+    <div class="nav">
+      <strong>CO-SYNCHRO</strong>
+      <div class="nav-links">
+        <a href="#problem">Problem</a>
+        <a href="#solution">Solution</a>
+        <a href="#data">Data</a>
+        <a class="btn" href="#contact">Request Info</a>
       </div>
     </div>
-  </div>
-</section>
+  </header>
 
-<!-- ══ SOLUTION ════════════════════════════════════════ -->
-<section id="solution">
-  <div class="container">
-    <div class="solution-scene">
-      <div class="solution-text">
-        <div class="label reveal-left">SOLUTION</div>
-        <h2 class="headline reveal-left" style="transition-delay:0.1s">言語より先に、<br>共鳴する。</h2>
-        <p class="reveal-left" style="color:var(--muted);line-height:2;margin-top:20px;font-size:1rem;white-space:pre-line;transition-delay:0.2s">CO-SYNCHROは「翻訳」ではなく「接触設計」をする。&#10;スマートフォンを近づける1秒で、&#10;AIが二人の化学反応を可視化する。</p>
-      </div>
-
-      <!-- 3D Scan Demo -->
-      <div class="scan-stage reveal-right" style="transition-delay:0.15s">
-        <div class="scan-pair" id="scan-pair">
-          <div class="phone phone-a">
-            <div class="phone-inner"><div class="phone-dot"></div></div>
-          </div>
-          <div class="pulse-container">
-            <div class="pulse-ring"></div>
-            <div class="pulse-ring"></div>
-            <div class="pulse-ring"></div>
-          </div>
-          <div class="phone phone-b">
-            <div class="phone-inner"><div class="phone-dot"></div></div>
+  <main>
+    <section id="hero">
+      <div class="container hero">
+        <div>
+          <div class="label">CO-SYNCHRO</div>
+          <h1>Chemistry in one second.</h1>
+          <p>Just hold two smartphones together — AI orchestrates the connection between you.</p>
+          <div class="buttons">
+            <a class="btn" href="#solution">Learn More</a>
+            <a class="btn" href="#contact">Request Information</a>
           </div>
         </div>
+        <div id="hero-canvas" class="glass"></div>
       </div>
-    </div>
-  </div>
-</section>
+    </section>
 
-<!-- ══ HOW IT WORKS ════════════════════════════════════ -->
-<section id="how-it-works">
-  <div class="container">
-    <div class="hiw-header">
-      <div class="label reveal">HOW IT WORKS</div>
-      <h2 class="headline reveal" style="transition-delay:0.1s">3ステップで、繋がる。</h2>
-    </div>
-    <div class="hiw-steps">
-      <div class="hiw-step reveal" style="transition-delay:0s">
-        <div class="step-num">01</div>
-        <h3>スキャン</h3>
-        <p>スマホを近づけて1秒。設定不要。アプリを開くだけ。</p>
-        <div class="step-visual">
-          <div class="mini-phones">
-            <div class="mini-phone approach"></div>
-            <div class="mini-phone approach2"></div>
-          </div>
+    <section id="problem">
+      <div class="container">
+        <div class="label">Problem</div>
+        <h2>What is happening at Narita Airport right now.</h2>
+        <div class="cards">
+          <div class="card glass"><h3>The Language Barrier</h3><p>Seven languages, one workplace. Even a greeting doesn't land.</p></div>
+          <div class="card glass"><h3>Isolation & Turnover</h3><p>Workplace isolation drives turnover and weakens trust.</p></div>
+          <div class="card glass"><h3>Communication Cost</h3><p>Translation and interpreter operations create constant overhead.</p></div>
         </div>
       </div>
-      <div class="hiw-step reveal" style="transition-delay:0.14s">
-        <div class="step-num">02</div>
-        <h3>化学反応</h3>
-        <p>AIが相手の特性カードを3枚生成。相性スコアがリアルタイムで出る。</p>
-        <div class="step-visual">
-          <div class="mini-cards">
-            <div class="mini-card"></div>
-            <div class="mini-card"></div>
-            <div class="mini-card"></div>
-          </div>
+    </section>
+
+    <section id="solution">
+      <div class="container">
+        <div class="label">Solution</div>
+        <h2>Resonate before words.</h2>
+        <p>CO-SYNCHRO is not a translation tool — it is contact design. AI makes chemistry visible before conversation begins.</p>
+      </div>
+    </section>
+
+    <section id="data">
+      <div class="container">
+        <div class="label">Data</div>
+        <h2>The numbers say it.</h2>
+        <div class="metrics">
+          <div class="metric glass"><div class="metric-number">100,000</div><p>Airport workforce scale</p></div>
+          <div class="metric glass"><div class="metric-number">60%</div><p>Turnover concern</p></div>
+          <div class="metric glass"><div class="metric-number">1 sec</div><p>Scan time</p></div>
+          <div class="metric glass"><div class="metric-number">7 lang</div><p>Supported UI languages</p></div>
         </div>
       </div>
-      <div class="hiw-step reveal" style="transition-delay:0.28s">
-        <div class="step-num">03</div>
-        <h3>会話が始まる</h3>
-        <p>AIが「最初の一言」を提案。言語は自動切り替え。</p>
-        <div class="step-visual">
-          <div class="mini-chats">
-            <div class="mini-chat"></div>
-            <div class="mini-chat"></div>
-            <div class="mini-chat"></div>
-          </div>
-        </div>
+    </section>
+
+    <section id="contact">
+      <div class="container glass" style="padding:48px; text-align:center;">
+        <div class="label">Contact</div>
+        <h2>Ready to try it on the frontline?</h2>
+        <p>Start with a small-scale pilot and validate adoption with minimal operational risk.</p>
+        <a class="btn" href="#">Book a 15-min Pilot Discussion</a>
       </div>
-    </div>
-  </div>
-</section>
+    </section>
+  </main>
 
-<!-- ══ USE CASES ═══════════════════════════════════════ -->
-<section id="use-cases">
-  <div class="container">
-    <div class="label reveal">USE CASES</div>
-    <h2 class="headline reveal" style="transition-delay:0.1s">使われる場所は、現場だ。</h2>
-    <div class="uc-grid">
-      <div class="glass-card uc-card reveal" style="transition-delay:0s">
-        <svg class="uc-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M22 16.92V19a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 2h2.09a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.09 9.91a16 16 0 0 0 5.91 5.91l.91-.91a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 17z"/>
-        </svg>
-        <h3>空港・港湾</h3>
-        <p>成田空港10万人スタッフの多国籍チーム構築</p>
-      </div>
-      <div class="glass-card uc-card reveal" style="transition-delay:0.12s">
-        <svg class="uc-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
-          <rect x="2" y="9" width="20" height="13" rx="1"/><path d="M8 9V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v4"/><line x1="12" y1="13" x2="12" y2="17"/><line x1="10" y1="15" x2="14" y2="15"/>
-        </svg>
-        <h3>大規模製造業</h3>
-        <p>ライン作業者の言語混在チームのオンボーディング</p>
-      </div>
-      <div class="glass-card uc-card reveal" style="transition-delay:0.24s">
-        <svg class="uc-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
-        </svg>
-        <h3>企業研修</h3>
-        <p>異文化チームビルディング研修への組み込み</p>
-      </div>
-    </div>
-  </div>
-</section>
+  <footer>
+    © 2026 CO-SYNCHRO / NPO Global Eye — Operated by Eita Watanabe
+  </footer>
 
-<!-- ══ DATA ════════════════════════════════════════════ -->
-<section id="data">
-  <div class="container">
-    <div class="data-header">
-      <div class="label reveal">DATA</div>
-      <h2 class="headline reveal" style="transition-delay:0.1s">数字で語る。</h2>
-    </div>
-    <div class="data-grid">
-      <div class="data-item reveal" style="transition-delay:0s" data-val="100000" data-display="10万">
-        <span class="data-value" id="dv0">0<span class="data-suffix">人</span></span>
-        <p class="data-label">成田空港拡大後のスタッフ数</p>
-      </div>
-      <div class="data-item reveal" style="transition-delay:0.1s" data-val="60" data-display="60">
-        <span class="data-value" id="dv1">0<span class="data-suffix">%</span></span>
-        <p class="data-label">外国人スタッフの3年以内離職率</p>
-      </div>
-      <div class="data-item reveal" style="transition-delay:0.2s" data-val="1" data-display="1">
-        <span class="data-value" id="dv2">0<span class="data-suffix">秒</span></span>
-        <p class="data-label">スキャンにかかる時間</p>
-      </div>
-      <div class="data-item reveal" style="transition-delay:0.3s" data-val="7" data-display="7">
-        <span class="data-value" id="dv3">0<span class="data-suffix">言語</span></span>
-        <p class="data-label">CO-SYNCHROのUI対応言語数</p>
-      </div>
-    </div>
-  </div>
-</section>
+  <script type="module">
+    import * as THREE from 'three';
 
-<!-- ══ CTA ═════════════════════════════════════════════ -->
-<section id="cta">
-  <div class="cta-glow"></div>
-  <div class="container">
-    <div class="cta-inner">
-      <div class="cta-box glass reveal">
-        <div class="label" style="justify-content:center;margin-bottom:28px">CONTACT</div>
-        <h2 class="headline reveal" style="transition-delay:0.1s;margin-bottom:24px">成田空港の現場で、<br>試してみませんか。</h2>
-        <p class="reveal" style="transition-delay:0.2s">最初はグローバルアイでの小規模PoCから。&#10;導入コスト・リスクをゼロに近づけたトライアルプランを用意しています。</p>
-        <div class="reveal" style="transition-delay:0.3s">
-          <a href="mailto:contact@co-synchro.jp" class="btn btn-primary btn-large">お問い合わせ・資料請求</a>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
+    gsap.registerPlugin(ScrollTrigger);
 
-<!-- ══ FOOTER ══════════════════════════════════════════ -->
-<footer>
-  <div class="container">
-    <div class="footer-inner">
-      <div class="footer-logo">CO-SYNCHRO</div>
-      <p class="footer-copy">© 2026 CO-SYNCHRO / NPO法人グローバルアイ<br>運営：渡辺瑛太</p>
-    </div>
-  </div>
-</footer>
+    if (window.innerWidth > 768) {
+      const mount = document.getElementById('hero-canvas');
+      const scene = new THREE.Scene();
+      const camera = new THREE.PerspectiveCamera(45, mount.clientWidth / mount.clientHeight, 0.1, 100);
+      camera.position.z = 6;
 
-<script type="module">
-import { initScene } from './three-scene.js';
+      const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+      renderer.setSize(mount.clientWidth, mount.clientHeight);
+      mount.appendChild(renderer.domElement);
 
-/* ── Hero entry ── */
-const heroContent = document.getElementById('hero-content');
-requestAnimationFrame(() => requestAnimationFrame(() => {
-  heroContent.classList.add('ready');
-}));
+      const material = new THREE.MeshPhysicalMaterial({
+        color: 0x1a1f2e,
+        roughness: 0.15,
+        metalness: 0.8,
+        transmission: 0.05
+      });
 
-/* ── Header scroll ── */
-const header = document.getElementById('header');
-window.addEventListener('scroll', () => {
-  header.classList.toggle('scrolled', window.scrollY > 60);
-}, { passive: true });
+      const geo = new THREE.BoxGeometry(1, 2, 0.12);
+      const phoneA = new THREE.Mesh(geo, material);
+      const phoneB = new THREE.Mesh(geo, material);
+      phoneA.position.x = -1.4;
+      phoneB.position.x = 1.4;
+      scene.add(phoneA, phoneB);
 
-/* ── Three.js with fallback ── */
-const canvas = document.getElementById('hero-canvas');
-const fallback = document.getElementById('hero-fallback');
-const isMobile = window.matchMedia('(max-width:768px)').matches;
+      const light = new THREE.PointLight(0x0057FF, 3, 10);
+      light.position.set(2, 2, 3);
+      scene.add(light);
+      scene.add(new THREE.AmbientLight(0xffffff, 0.4));
 
-if (isMobile) {
-  fallback.style.display = 'block';
-} else {
-  try {
-    initScene(canvas);
-  } catch (e) {
-    fallback.style.display = 'block';
-  }
-}
+      gsap.to(phoneA.position, {
+        x: -0.3,
+        scrollTrigger: {
+          trigger: '#solution',
+          start: 'top 80%',
+          end: 'top 20%',
+          scrub: true
+        }
+      });
 
-/* ── Reveal on scroll ── */
-const revealEls = document.querySelectorAll('.reveal, .reveal-left, .reveal-right');
-const revealObs = new IntersectionObserver(entries => {
-  entries.forEach(e => {
-    if (e.isIntersecting) { e.target.classList.add('in'); revealObs.unobserve(e.target); }
-  });
-}, { threshold: 0.12 });
-revealEls.forEach(el => revealObs.observe(el));
+      gsap.to(phoneB.position, {
+        x: 0.3,
+        scrollTrigger: {
+          trigger: '#solution',
+          start: 'top 80%',
+          end: 'top 20%',
+          scrub: true
+        }
+      });
 
-/* ── Scan demo ── */
-const scanPair = document.getElementById('scan-pair');
-let scanTick = 0, scanDir = 1, scanAF;
-function animateScan() {
-  scanTick += 0.007 * scanDir;
-  if (scanTick >= 1) scanDir = -1;
-  if (scanTick <= 0) scanDir = 1;
-  const gap = 72 - scanTick * 64;
-  scanPair.style.gap = gap + 'px';
-  if (scanTick > 0.6) scanPair.classList.add('active');
-  else scanPair.classList.remove('active');
-  scanAF = requestAnimationFrame(animateScan);
-}
-animateScan();
-
-/* ── Count-up ── */
-function countUp(el, target, display) {
-  if (el._counted) return; el._counted = true;
-  const suffix = el.querySelector('.data-suffix').outerHTML;
-  if (isNaN(target) || display.match(/[万億]/)) {
-    let i = 0, total = 28;
-    const chars = '0123456789';
-    const tick = () => {
-      if (i++ >= total) { el.innerHTML = display + suffix; return; }
-      el.innerHTML = chars[Math.floor(Math.random() * chars.length)] + suffix;
-      setTimeout(tick, 1800 / total);
-    };
-    tick(); return;
-  }
-  const dur = 1800, start = performance.now();
-  const ease = t => 1 - Math.pow(1 - t, 4);
-  const step = now => {
-    const p = Math.min((now - start) / dur, 1);
-    el.innerHTML = Math.round(ease(p) * target) + suffix;
-    if (p < 1) requestAnimationFrame(step);
-    else el.innerHTML = display + suffix;
-  };
-  requestAnimationFrame(step);
-}
-
-const dataItems = document.querySelectorAll('.data-item');
-const countObs = new IntersectionObserver(entries => {
-  entries.forEach(e => {
-    if (e.isIntersecting) {
-      const el = e.target;
-      const valEl = el.querySelector('.data-value');
-      countUp(valEl, parseInt(el.dataset.val), el.dataset.display);
-      countObs.unobserve(el);
+      function animate(t = 0) {
+        requestAnimationFrame(animate);
+        phoneA.rotation.y = Math.sin(t * 0.001) * 0.2;
+        phoneB.rotation.y = -Math.sin(t * 0.001) * 0.2;
+        phoneA.position.y = Math.sin(t * 0.0015) * 0.1;
+        phoneB.position.y = -Math.sin(t * 0.0015) * 0.1;
+        renderer.render(scene, camera);
+      }
+      animate();
     }
-  });
-}, { threshold: 0.4 });
-dataItems.forEach(el => countObs.observe(el));
-</script>
-
+  </script>
 </body>
 </html>
