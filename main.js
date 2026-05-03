@@ -1,360 +1,231 @@
-// main.js — CO-SYNCHRO scroll animations & interactions
-import { CONTENT } from './data.js';
-import { initScene, destroyScene } from './three-scene.js';
+import { CONTENT } from "./data.js";
+import { initScene, destroyScene } from "./three-scene.js";
 
-/* ============================================================
-   DOM Rendering
-   ============================================================ */
+const iconMap = {
+  language: `<svg class="card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h9"/><path d="M9 3v2c0 4.4-1.8 8-5 10"/><path d="M5 9c1.1 2.5 3 4.5 6 6"/><path d="M14 21l1.2-3h4.6l1.2 3"/><path d="M16 14l1.5-4 1.5 4"/></svg>`,
+  person: `<svg class="card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 21a8 8 0 0 0-16 0"/><circle cx="12" cy="7" r="4"/><path d="M18.5 8.5l2 2 2-3"/></svg>`,
+  yen: `<svg class="card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 4l6 8 6-8"/><path d="M12 12v8"/><path d="M8 13h8"/><path d="M8 17h8"/></svg>`,
+  plane: `<svg class="use-case-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16l-9-5V4a2 2 0 0 0-4 0v7l-7 5 1 2 6-2v4l-2 1.5V23l4-1 4 1v-1.5L13 20v-4l8 2 1-2z"/></svg>`,
+  building: `<svg class="use-case-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 21V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v16"/><path d="M16 8h2a2 2 0 0 1 2 2v11"/><path d="M8 7h4M8 11h4M8 15h4M9 21v-3h2v3"/></svg>`,
+  handshake: `<svg class="use-case-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 11l3 3a2 2 0 0 0 3 0l1-1"/><path d="M8 12l-2 2a2 2 0 0 0 0 3l2 2a2 2 0 0 0 3 0l1-1"/><path d="M14 13l2 2a2 2 0 0 0 3 0l1-1"/><path d="M2 12l5-5 3 3"/><path d="M22 12l-5-5-4 4"/></svg>`,
+};
 
-function renderNav() {
-  const d = CONTENT.nav;
-  document.querySelector('.logo span').textContent = d.logo;
-  const navEl = document.querySelector('nav');
-  navEl.innerHTML = d.links
-    .map(l => `<a href="${l.href}">${l.label}</a>`)
-    .join('');
-  document.querySelector('.header-cta').textContent = d.cta;
+function qs(selector) {
+  return document.querySelector(selector);
 }
 
-function renderHero() {
-  const d = CONTENT.hero;
-  document.querySelector('.hero-eyebrow').textContent = d.label;
-  document.querySelector('#hero h1').textContent      = d.heading;
-  document.querySelector('.hero-sub').textContent     = d.subheading;
-  document.querySelector('.hero-cta-primary').textContent   = d.cta_primary;
-  document.querySelector('.hero-cta-secondary').textContent = d.cta_secondary;
+function setText(selector, value) {
+  const el = qs(selector);
+  if (el) el.textContent = value;
 }
 
-function renderProblem() {
-  const d = CONTENT.problem;
-  document.querySelector('#problem .section-label').textContent = d.label;
-  document.querySelector('#problem h2').textContent             = d.heading;
-  const grid = document.querySelector('.problem-cards');
-  grid.innerHTML = d.cards.map((c, i) => `
-    <div class="problem-card" style="transition-delay:${i * 0.12}s">
-      <div class="card-stat">${c.stat}<span>${c.unit}</span></div>
-      <h3>${c.title}</h3>
-      <p>${c.body}</p>
-    </div>
-  `).join('');
-}
+function renderContent() {
+  const { nav, hero, problem, solution, howItWorks, useCases, metrics, cta, footer } = CONTENT;
 
-function renderSolution() {
-  const d = CONTENT.solution;
-  document.querySelector('#solution .section-label').textContent = d.label;
-  document.querySelector('#solution h2').textContent             = d.heading;
-  document.querySelector('#solution .solution-body').textContent = d.body;
-}
+  setText(".brand span", nav.logo);
+  qs(".site-nav").innerHTML = nav.links.map((item) => `<a href="${item.href}">${item.label}</a>`).join("");
+  setText(".header-cta", nav.cta);
 
-function renderHowItWorks() {
-  const d = CONTENT.howItWorks;
-  document.querySelector('#how-it-works .section-label').textContent = d.label;
-  document.querySelector('#how-it-works h2').textContent             = d.heading;
+  setText(".hero-eyebrow", hero.label);
+  setText("#hero-title", hero.heading);
+  setText(".hero-sub", hero.subheading);
+  setText(".hero-cta-primary", hero.cta_primary);
+  setText(".hero-cta-secondary", hero.cta_secondary);
 
-  const visuals = [
-    `<div class="step-mini-phones">
-      <div class="mini-phone scanning"></div>
-      <div class="mini-phone scanning2"></div>
-    </div>`,
-    `<div class="step-cards-anim">
-      <div class="mini-card"></div>
-      <div class="mini-card"></div>
-      <div class="mini-card"></div>
-    </div>`,
-    `<div class="step-chat-anim">
-      <div class="chat-bubble"></div>
-      <div class="chat-bubble"></div>
-      <div class="chat-bubble"></div>
-    </div>`,
-  ];
+  setText("#problem .section-kicker", problem.label);
+  setText("#problem-title", problem.heading);
+  qs(".problem-cards").innerHTML = problem.cards.map((card, index) => `
+    <article class="glass-card reveal" style="transition-delay: ${index * 90}ms">
+      ${iconMap[card.icon] || ""}
+      <h3>${card.title}</h3>
+      <p>${card.body}</p>
+    </article>
+  `).join("");
 
-  const grid = document.querySelector('.steps-grid');
-  grid.innerHTML = d.steps.map((s, i) => `
-    <div class="step-card" style="transition-delay:${i * 0.15}s">
-      <div class="step-number">${s.number}</div>
-      <h3>${s.title}</h3>
-      <p>${s.body}</p>
-      <div class="step-visual">${visuals[i]}</div>
-    </div>
-  `).join('');
-}
+  setText("#solution .section-kicker", solution.label);
+  setText("#solution-title", solution.heading);
+  setText(".solution-body", solution.body);
 
-function renderUseCases() {
-  const d = CONTENT.useCases;
-  document.querySelector('#use-cases .section-label').textContent = d.label;
-  document.querySelector('#use-cases h2').textContent             = d.heading;
+  setText("#how-it-works .section-kicker", howItWorks.label);
+  setText("#how-title", howItWorks.heading);
+  qs(".steps-grid").innerHTML = howItWorks.steps.map((step, index) => `
+    <article class="step-card reveal" style="transition-delay: ${index * 100}ms">
+      <div class="step-number">${step.number}</div>
+      <h3>${step.title}</h3>
+      <p>${step.body}</p>
+      <div class="step-visual">${stepVisual(index)}</div>
+    </article>
+  `).join("");
 
-  const icons = [
-    // Airplane
-    `<svg class="use-case-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-      <path d="M21 16l-9-5V3a2 2 0 0 0-4 0v8L3 16l1 2 8-2.5V21l-2 1.5V24l3-1 3 1v-2.5L14 20v-4.5L22 18l-1-2z"/>
-    </svg>`,
-    // Factory
-    `<svg class="use-case-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-      <rect x="2" y="8" width="20" height="14" rx="1"/>
-      <path d="M6 8V4M12 8V4M18 8V4M2 14h20M7 18h2M15 18h2"/>
-    </svg>`,
-    // Handshake
-    `<svg class="use-case-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-      <path d="M9 11l3 3 8-8"/>
-      <path d="M20 12v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h9"/>
-    </svg>`,
-  ];
+  setText("#use-cases .section-kicker", useCases.label);
+  setText("#use-title", useCases.heading);
+  qs(".use-cases-grid").innerHTML = useCases.cards.map((card, index) => `
+    <article class="glass-card reveal" style="transition-delay: ${index * 90}ms">
+      ${iconMap[card.icon] || ""}
+      <h3>${card.title}</h3>
+      <p>${card.body}</p>
+    </article>
+  `).join("");
 
-  const grid = document.querySelector('.use-cases-grid');
-  grid.innerHTML = d.cards.map((c, i) => `
-    <div class="use-case-card" style="transition-delay:${i * 0.12}s">
-      ${icons[i]}
-      <h3>${c.title}</h3>
-      <p>${c.body}</p>
-    </div>
-  `).join('');
-}
-
-function renderMetrics() {
-  const d = CONTENT.metrics;
-  document.querySelector('#metrics .section-label').textContent = d.label;
-  document.querySelector('#metrics h2').textContent             = d.heading;
-
-  const grid = document.querySelector('.metrics-grid');
-  grid.innerHTML = d.items.map((item, i) => `
-    <div class="metric-item" style="transition-delay:${i * 0.1}s" data-value="${item.value}" data-display="${item.display}">
-      <span class="metric-value" data-count="false">
-        0<span class="metric-suffix">${item.suffix}</span>
-      </span>
+  setText("#data .section-kicker", metrics.label);
+  setText("#data-title", metrics.heading);
+  qs(".metrics-grid").innerHTML = metrics.items.map((item, index) => `
+    <article class="metric-item reveal" data-value="${item.value}" data-display="${item.display}" data-suffix="${item.suffix}" style="transition-delay: ${index * 80}ms">
+      <span class="metric-value">0<span class="metric-suffix">${item.suffix}</span></span>
       <p class="metric-label">${item.label}</p>
-    </div>
-  `).join('');
+    </article>
+  `).join("");
+
+  setText("#cta .section-kicker", cta.label);
+  setText("#cta-title", cta.heading);
+  setText(".cta-body", cta.body);
+  setText(".btn-cta-large", cta.cta);
+  qs(".footer-copy").innerHTML = `${footer.copy}<br>${footer.author}`;
 }
 
-function renderCTA() {
-  const d = CONTENT.cta;
-  document.querySelector('#cta .section-label').textContent = d.label;
-  document.querySelector('#cta h2').textContent             = d.heading;
-  document.querySelector('#cta .cta-body').textContent      = d.body;
-  document.querySelector('#cta .btn-cta-large').textContent = d.cta;
+function stepVisual(index) {
+  if (index === 0) {
+    return `<div class="step-mini-phones"><div class="mini-phone scanning"></div><div class="mini-phone scanning2"></div></div>`;
+  }
+  if (index === 1) {
+    return `<div class="step-cards-anim"><div class="mini-card"></div><div class="mini-card"></div><div class="mini-card"></div></div>`;
+  }
+  return `<div class="step-chat-anim"><div class="chat-bubble"></div><div class="chat-bubble"></div><div class="chat-bubble"></div></div>`;
 }
 
-function renderFooter() {
-  const d = CONTENT.footer;
-  document.querySelector('.footer-copy').innerHTML =
-    `${d.copy}<br>${d.author}`;
+function setupHeader() {
+  const header = qs("#site-header");
+  const update = () => header.classList.toggle("scrolled", window.scrollY > 24);
+  update();
+  window.addEventListener("scroll", update, { passive: true });
 }
 
-/* ============================================================
-   Scroll Animations
-   ============================================================ */
-
-function setupScrollObserver() {
-  const targets = document.querySelectorAll(
-    '.problem-card, .step-card, .use-case-card, .metric-item, .fade-in'
-  );
-
+function setupReveal() {
   const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
+    entries.forEach((entry) => {
       if (entry.isIntersecting) {
-        entry.target.classList.add('visible');
+        entry.target.classList.add("visible");
         observer.unobserve(entry.target);
       }
     });
-  }, { threshold: 0.15 });
+  }, { threshold: 0.18 });
 
-  targets.forEach(el => observer.observe(el));
+  document.querySelectorAll(".reveal").forEach((el) => observer.observe(el));
 }
 
-/* ============================================================
-   Metric Count-Up
-   ============================================================ */
-
-function animateCount(el, target, display) {
-  if (el.dataset.counted === 'true') return;
-  el.dataset.counted = 'true';
-
-  const suffix = el.querySelector('.metric-suffix').outerHTML;
-  const isLarge = display.includes('万') || display.includes('億');
-  const duration = 2000;
-  const start = performance.now();
-
-  if (isLarge) {
-    // Just reveal with a typewriter effect for formatted values
-    let frame = 0;
-    const chars = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
-    const total = 30;
-    const tick = () => {
-      if (frame >= total) {
-        el.innerHTML = display + suffix;
-        return;
-      }
-      const rand = chars[Math.floor(Math.random() * chars.length)];
-      el.innerHTML = rand + suffix;
-      frame++;
-      setTimeout(tick, duration / total);
-    };
-    tick();
-    return;
-  }
-
-  const easeOut = t => 1 - Math.pow(1 - t, 3);
-  const step = (now) => {
-    const elapsed = now - start;
-    const progress = Math.min(elapsed / duration, 1);
-    const val = Math.round(easeOut(progress) * target);
-    el.innerHTML = val + suffix;
-    if (progress < 1) requestAnimationFrame(step);
-    else el.innerHTML = display + suffix;
-  };
-  requestAnimationFrame(step);
-}
-
-function setupMetricCountUp() {
-  const items = document.querySelectorAll('.metric-item');
+function setupMetrics() {
+  const items = document.querySelectorAll(".metric-item");
   const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        const el    = entry.target;
-        const value   = parseInt(el.dataset.value, 10);
-        const display = el.dataset.display;
-        const valEl   = el.querySelector('.metric-value');
-        animateCount(valEl, value, display);
-        observer.unobserve(el);
-      }
+    entries.forEach((entry) => {
+      if (!entry.isIntersecting) return;
+      countMetric(entry.target);
+      observer.unobserve(entry.target);
     });
-  }, { threshold: 0.4 });
+  }, { threshold: 0.45 });
 
-  items.forEach(el => observer.observe(el));
+  items.forEach((item) => observer.observe(item));
 }
 
-/* ============================================================
-   Scan Demo Animation
-   ============================================================ */
+function countMetric(item) {
+  if (item.dataset.counted === "true") return;
+  item.dataset.counted = "true";
 
-function setupScanDemo() {
-  const demo = document.querySelector('.scan-demo');
-  if (!demo) return;
+  const target = Number(item.dataset.value);
+  const display = item.dataset.display;
+  const suffix = item.dataset.suffix;
+  const valueEl = item.querySelector(".metric-value");
+  const started = performance.now();
+  const duration = 1800;
+  const easeOutQuart = (t) => 1 - Math.pow(1 - t, 4);
 
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        demo.classList.add('scanning');
-      } else {
-        demo.classList.remove('scanning');
-      }
-    });
-  }, { threshold: 0.4 });
-
-  observer.observe(demo);
-
-  // Animate phone gap with CSS variable
-  let closing = true;
-  let progress = 0;
-
-  function tickGap() {
-    const phoneA = demo.querySelector('.phone-a');
-    const phoneB = demo.querySelector('.phone-b');
-    if (!phoneA || !phoneB) return;
-
-    if (closing) {
-      progress += 0.005;
-      if (progress >= 1) { closing = false; }
+  function frame(now) {
+    const progress = Math.min((now - started) / duration, 1);
+    const current = Math.round(target * easeOutQuart(progress));
+    valueEl.innerHTML = `${current.toLocaleString("en-US")}<span class="metric-suffix">${suffix}</span>`;
+    if (progress < 1) {
+      requestAnimationFrame(frame);
     } else {
-      progress -= 0.003;
-      if (progress <= 0) { closing = true; }
+      valueEl.innerHTML = `${display}<span class="metric-suffix">${suffix}</span>`;
     }
-
-    const gap = 80 - progress * 72;
-    demo.style.gap = `${gap}px`;
-    requestAnimationFrame(tickGap);
   }
 
-  tickGap();
+  requestAnimationFrame(frame);
 }
 
-/* ============================================================
-   Header scroll effect
-   ============================================================ */
+function setupGsap() {
+  if (!window.gsap || !window.ScrollTrigger) return;
 
-function setupHeader() {
-  const header = document.getElementById('site-header');
-  let ticking = false;
+  gsap.registerPlugin(ScrollTrigger);
 
-  window.addEventListener('scroll', () => {
-    if (!ticking) {
-      requestAnimationFrame(() => {
-        if (window.scrollY > 60) {
-          header.classList.add('scrolled');
-        } else {
-          header.classList.remove('scrolled');
-        }
-        ticking = false;
-      });
-      ticking = true;
-    }
+  gsap.fromTo(".hero-copy > *", {
+    y: 26,
+    opacity: 0,
+  }, {
+    y: 0,
+    opacity: 1,
+    duration: 0.9,
+    stagger: 0.12,
+    ease: "power3.out",
+    delay: 0.12,
+  });
+
+  gsap.to(".scan-demo", {
+    "--scan-gap": "18px",
+    ease: "none",
+    scrollTrigger: {
+      trigger: "#solution",
+      start: "top 70%",
+      end: "bottom 30%",
+      scrub: true,
+      onUpdate: ({ progress }) => qs(".scan-demo").classList.toggle("scanning", progress > 0.66),
+    },
+  });
+
+  gsap.to(".steps-progress", {
+    "--steps-progress": "100%",
+    ease: "none",
+    scrollTrigger: {
+      trigger: "#how-it-works",
+      start: "top 60%",
+      end: "bottom 40%",
+      scrub: true,
+    },
+  });
+
+  ScrollTrigger.create({
+    trigger: "#how-it-works",
+    start: "top top",
+    end: "+=520",
+    pin: ".steps-wrap",
+    pinSpacing: true,
+    anticipatePin: 1,
   });
 }
 
-/* ============================================================
-   Hero entry animation
-   ============================================================ */
+function setupThree() {
+  const canvas = qs("#hero-canvas");
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const isMobile = window.matchMedia("(max-width: 900px)").matches;
 
-function triggerHeroEntry() {
-  // Use requestAnimationFrame to ensure paint before class add
-  requestAnimationFrame(() => {
-    requestAnimationFrame(() => {
-      const content = document.querySelector('.hero-content');
-      if (content) content.classList.add('visible');
-    });
-  });
-}
+  if (!canvas || reduceMotion || isMobile) return;
 
-/* ============================================================
-   Three.js init (desktop only)
-   ============================================================ */
-
-function setupThreeJS() {
-  const isMobile = window.matchMedia('(max-width: 768px)').matches;
-  const canvas   = document.getElementById('hero-canvas');
-  const fallback = document.querySelector('.hero-fallback-bg');
-
-  if (isMobile || !canvas) {
-    if (fallback) fallback.style.display = 'block';
-    return;
+  try {
+    initScene(canvas);
+  } catch (error) {
+    destroyScene();
+    canvas.style.display = "none";
   }
-
-  import('./three-scene.js').then(mod => {
-    try {
-      mod.initScene(canvas);
-    } catch (err) {
-      console.info('WebGL unavailable, using CSS fallback.');
-      if (fallback) fallback.style.display = 'block';
-    }
-  }).catch(() => {
-    if (fallback) fallback.style.display = 'block';
-  });
 }
 
-/* ============================================================
-   Boot
-   ============================================================ */
-
-document.addEventListener('DOMContentLoaded', () => {
-  renderNav();
-  renderHero();
-  renderProblem();
-  renderSolution();
-  renderHowItWorks();
-  renderUseCases();
-  renderMetrics();
-  renderCTA();
-  renderFooter();
-
+document.addEventListener("DOMContentLoaded", () => {
+  renderContent();
   setupHeader();
-  triggerHeroEntry();
-  setupThreeJS();
+  setupThree();
+  setupReveal();
+  setupMetrics();
+  setupGsap();
 
-  // Observers run after render
   requestAnimationFrame(() => {
-    setupScrollObserver();
-    setupMetricCountUp();
-    setupScanDemo();
+    qs(".hero-copy").classList.add("visible");
   });
 });
